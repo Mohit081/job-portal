@@ -24,6 +24,10 @@ const jobSchema = new Schema({
         type: String,
         required: true
     },
+    experience: {
+        type: Number,
+        default: 0
+    },
     position: {
         type: Number,
         required: true

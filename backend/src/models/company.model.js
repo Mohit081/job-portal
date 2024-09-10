@@ -1,21 +1,21 @@
 import mongoose,{Schema} from "mongoose";
 
 const companySchema = new Schema({
-    name: {
+    companyName: {
         type: String,
         required: true
     },
     descripition: {
-        type: string
+        type: String
     },
     website: {
-        type: string
+        type: String
     },
     location: {
-        type: string
+        type: String
     },
     logo: {
-        type: string
+        type: String
     },
     userId: {
         type: Schema.Types.ObjectId,
@@ -24,4 +24,4 @@ const companySchema = new Schema({
     }
 },{timestamps: true})
 
-export default Company = mongoose.model("Company",companySchema)
+export const Company = mongoose.model("Company",companySchema)
