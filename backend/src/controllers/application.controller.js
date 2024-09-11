@@ -1,9 +1,9 @@
-import { isValidObjectId } from "mongoose";
-import { Application } from "../models/application.model";
-import { Job } from "../models/job.model";
-import { ApiError } from "../utlis/ApiError";
-import { ApiResponse } from "../utlis/ApiResponse";
-import { asyncHandler } from "../utlis/asyncHandler";
+import { isObjectIdOrHexString, isValidObjectId } from "mongoose";
+import { Application } from "../models/application.model.js";
+import { Job } from "../models/job.model.js";
+import { ApiError } from "../utlis/ApiError.js";
+import { ApiResponse } from "../utlis/ApiResponse.js";
+import { asyncHandler } from "../utlis/asyncHandler.js";
 
 const applyJob = asyncHandler(async (req, res) => {
   const userId = req.id;
@@ -44,24 +44,26 @@ const applyJob = asyncHandler(async (req, res) => {
 const getAppliedjobs = asyncHandler(async (req, res) => {
   const userId = req.id;
 
-  const application = await Application.find({ applicant: userId })
-    .sort({ createdAt: -1 })
-    .populate({
-      path: "job",
-      options: { sort: { createdAt: -1 } },
-      populate: {
-        path: "company",
-        options: { sort: { createdAt: -1 } },
-      },
-    });
+  console.log(userId)
 
-  if (!application) {
-    throw new ApiError(400, "application not found");
-  }
+  // const application = await Application.find({applicant: userId})
+  //   .sort({ createdAt: -1 })
+  //   .populate({
+  //     path: "job",
+  //     options: { sort: { createdAt: -1 } },
+  //     populate: {
+  //       path: "company",
+  //       options: { sort: { createdAt: -1 } },
+  //     },
+  //   });
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, application, "application found successfully"));
+  // if (!application) {
+  //   throw new ApiError(400, "application not found");
+  // }
+
+  // return res
+  //   .status(200)
+  //   .json(new ApiResponse(200, application, "application found successfully"));
 });
 
 const getApplicants = asyncHandler(async (req, res) => {
@@ -76,6 +78,7 @@ const getApplicants = asyncHandler(async (req, res) => {
     options: { sort: { createdAt: -1 } },
     populate: {
       path: "applicant",
+      options: { select:"-password -refreshToken"}
     },
   });
 
@@ -85,7 +88,7 @@ const getApplicants = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, "find all applicants successfully"));
+    .json(new ApiResponse(200, job, "find all applicants successfully"));
 });
 
 const updateStatus = asyncHandler(async (req, res) => {

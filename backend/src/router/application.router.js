@@ -1,4 +1,4 @@
-export { Router } from "express";
+import { Router } from "express";
 import {
   applyJob,
   getApplicants,
@@ -9,9 +9,9 @@ import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.route("/").post(verifyJWT, applyJob);
-router.route("/appliedjobs").post(verifyJWT, getAppliedjobs);
-router.route("/getapplicants/:id").post(verifyJWT, getApplicants);
+router.route("/:id").post(verifyJWT, applyJob);
+router.route("/appliedjobs").get(verifyJWT, getAppliedjobs);
+router.route("/getapplicants/:id").get(verifyJWT, getApplicants);
 router.route("/update/status/:id").post(verifyJWT, updateStatus);
 
 export default router;
