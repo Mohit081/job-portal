@@ -19,15 +19,9 @@ const registerCompany = asyncHandler(async (req, res) => {
 
   const company = await Company.create({
     companyName,
-    if(descripition) {
-      descripition;
-    },
-    if(website) {
-      website;
-    },
-    if(loation) {
-      location;
-    },
+    descripition,
+    website,
+    location,
     userId: req.id,
   });
 
@@ -37,7 +31,7 @@ const registerCompany = asyncHandler(async (req, res) => {
 
   return res
   .status(200)
-  .josn (new ApiResponse(200 , company , "successfully registed company"))
+  .json (new ApiResponse(200 , company , "successfully registed company"))
 });
 
 const getCompany = asyncHandler(async (req,res) => {
@@ -47,7 +41,7 @@ const getCompany = asyncHandler(async (req,res) => {
         throw new ApiError(400 , "userId not find")
     }
 
-    const company = await Company.findOne({userId})
+    const company = await Company.find({userId})
 
     if(!company) {
         throw new ApiError(400 , "company not find")
@@ -55,7 +49,7 @@ const getCompany = asyncHandler(async (req,res) => {
 
     return res
     .status(200)
-    .json(200 , company , "company find successfully")
+    .json(new ApiResponse(200 , company , "company find successfully"))
 })
 
 const getCompanyById = asyncHandler(async (req,res) => {
@@ -83,7 +77,7 @@ const updateCompany = asyncHandler(async (req, res) => {
 
     const company =  await Company.findByIdAndUpdate(
         req.params.id,
-        updateCompany,
+        updatedata,
         {
             new:true
         }

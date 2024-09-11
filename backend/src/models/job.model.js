@@ -9,9 +9,11 @@ const jobSchema = new Schema({
         type: String,
         required: true
     },
-    requirement: {
-        type: String
-    },
+    requirement: [
+        {
+            type: String
+        }
+    ],
     salary: {
         type: Number,
         required: true

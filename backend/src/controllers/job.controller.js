@@ -1,7 +1,7 @@
-import { asyncHandler } from "../utlis/asyncHandler";
-import { ApiError } from "../utlis/ApiError";
-import { ApiResponse } from "../utlis/ApiResponse";
-import { Job } from "../models/job.model";
+import { asyncHandler } from "../utlis/asyncHandler.js";
+import { ApiError } from "../utlis/ApiError.js";
+import { ApiResponse } from "../utlis/ApiResponse.js";
+import { Job } from "../models/job.model.js";
 import { query } from "express";
 import { isValidObjectId } from "mongoose";
 
@@ -32,6 +32,12 @@ const postJob = asyncHandler(async (req, res) => {
     throw new ApiError(400, "fill all the fields");
   }
 
+  const userId = req.id;
+
+  if (!userId) {
+    throw new ApiError(400, "something went wrong ");
+  }
+
   const job = await Job.create({
     title,
     descripition,
@@ -41,7 +47,7 @@ const postJob = asyncHandler(async (req, res) => {
     jobType,
     experience,
     position,
-    comapny: companyId,
+    company: companyId,
     created_By: userId,
   });
 
@@ -66,7 +72,7 @@ const getAllJobs = asyncHandler(async (req, res) => {
 
   const jobs = await Job.find(query)
     .populate({
-      path: "Company",
+      path: "company",
     })
     .sort({ createdAt: -1 });
 
@@ -77,7 +83,7 @@ const getAllJobs = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, jobs, "jobs find successfully"));
-});
+}); 
 
 const getJobById = asyncHandler(async (req, res) => {
   const jobId = req.params.id;
@@ -104,8 +110,8 @@ const getAdminJob = asyncHandler(async (req, res) => {
     throw new ApiError(400, "something went wrong");
   }
 
-  const jobs = await Job.find({ created_by: adminId }).populate({
-    path: "Company",
+  const jobs = await Job.find({ created_By: adminId }).populate({
+    path: "company",
     createdAt: -1,
   });
 
@@ -117,3 +123,5 @@ const getAdminJob = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, jobs, "jobs found successfully"));
 });
+
+export { postJob, getAdminJob, getAllJobs, getJobById };

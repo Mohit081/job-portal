@@ -11,7 +11,9 @@ const router = Router();
 
 router.route("/").post(verifyJWT, registerCompany);
 router.route("/getcompany").get(verifyJWT, getCompany);
-router.route("/getcompany/:{id}").get(getCompanyById);
-router.route("/update").post(verifyJWT, updateCompany);
+router.route("/getcompany/:id").get(getCompanyById);
+router.route("/update/:id").post(verifyJWT, updateCompany);
 
-export default router;
+export default router;  
+
+
