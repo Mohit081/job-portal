@@ -2,10 +2,17 @@ import React from "react";
 import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { RadioGroup } from "../ui/radio-group";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { USER_API_END_POINT } from "@/utlis/constants";
+import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import store from "../redux/store.js";
+import { setLoading } from "../redux/authSlice";
+import { Loader2 } from "lucide-react";
 
 const Signup = () => {
   const [input, setInput] = useState({
@@ -17,6 +24,10 @@ const Signup = () => {
     file: "",
   });
 
+  const navigate = useNavigate();
+  const loading = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -25,10 +36,40 @@ const Signup = () => {
     setInput({ ...input, file: e.target.files?.[0] });
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+    console.log(input);
+    const formData = new FormData();
+    formData.append("fullName", input.fullName);
+    formData.append("email", input.email);
+    formData.append("phoneNumber", input.phoneNumber);
+    formData.append("password", input.password);
+    formData.append("role", input.role);
+    if (input.file) {
+      formData.append("file", input.file);
+    }
 
-    const formData = new formData();
+    try {
+      console.log(loading)
+      dispatch(setLoading(true));
+      const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+
+      if (res.data.success) {
+        navigate("/login");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    } finally {
+      dispatch(setLoading(false));
+      console.log(loading)
+    }
   };
 
   return (
@@ -74,7 +115,7 @@ const Signup = () => {
             <div className="my-2">
               <Label className="pl-2">Password</Label>
               <Input
-                type="text"
+                type="password"
                 placeholder="Enter your password here"
                 value={input.password}
                 name="password"
@@ -87,7 +128,7 @@ const Signup = () => {
                   <Input
                     type="radio"
                     name="role"
-                    value="apllicant"
+                    value="applicant"
                     onChange={changeEventHandler}
                     className="cursor-pointer"
                   />
@@ -106,12 +147,24 @@ const Signup = () => {
               </RadioGroup>
               <div className="flex items-center gap-2">
                 <Label>Profile</Label>
-                <Input type="file" />
+                <Input
+                  type="file"
+                  accept="image/*0"
+                  onChange={changeFileHandler}
+                  className="cursor-pointer"
+                />
               </div>
             </div>
-            <Button type="submit" className="w-full my-4">
-              Signup
-            </Button>
+            { loading ? (
+              <Button className="w-full my-4 ">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <Button type="submit" className="w-full my-4">
+                Signup
+              </Button>
+            )}
             <span className="text-sm">
               already have an account?
               <Link to="/login" className="text-blue-600">

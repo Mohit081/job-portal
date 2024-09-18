@@ -10,7 +10,7 @@ import { upload } from "../middleware/multer.middleware.js";
 
 const router = Router();
 
-router.route("/").post(upload, userRegister);
+router.route("/register").post(upload, userRegister);
 router.route("/login").post(userLogin);
 router.route("/logout").post(verifyJWT, userLogout);
 router.route("/profile/update").post(verifyJWT, upload, profileupdate);

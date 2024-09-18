@@ -45,7 +45,7 @@ const userRegister = asyncHandler(async (req, res) => {
     email,
     phoneNumber,
     password,
-    role,
+    role
   });
 
   if (!user) {
