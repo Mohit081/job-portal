@@ -37,6 +37,10 @@ const userRegister = asyncHandler(async (req, res) => {
   const fileUri = getDataUri(file);
   const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
+  if(!cloudResponse){
+    throw new ApiError(400, "profile photo required");
+  }
+
   const existedUser = await User.findOne({ email });
 
   if (existedUser) {
