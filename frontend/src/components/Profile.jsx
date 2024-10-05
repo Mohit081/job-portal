@@ -5,10 +5,10 @@ import { Button } from "./ui/button";
 import { Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
-import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useSelector } from "react-redux";
 import useGetAppliedJobs from "./hooks/useGetAppliedJobs";
 import AppliedJobTable from "./AppliedJobTable";
+import UpdateProfileDialog from "./updateProfileDialog";
 
 const isResume = true;
 
