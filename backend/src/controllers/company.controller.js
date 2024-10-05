@@ -1,11 +1,13 @@
-import {asyncHandler} from "../utlis/asyncHandler.js";
-import {ApiError} from "../utlis/ApiError.js";
-import {ApiResponse} from "../utlis/ApiResponse.js";
-import {Company} from "../models/company.model.js";
+import { asyncHandler } from "../utlis/asyncHandler.js";
+import { ApiError } from "../utlis/ApiError.js";
+import { ApiResponse } from "../utlis/ApiResponse.js";
+import { Company } from "../models/company.model.js";
 import { isValidObjectId } from "mongoose";
+import getDataUri from "../utlis/datauri.js";
+import cloudinary from "../utlis/cloudinary.js";
 
 const registerCompany = asyncHandler(async (req, res) => {
-  const { companyName, descripition, website, location } = req.body;
+  const { companyName, description, website, location } = req.body;
 
   if (!companyName) {
     throw new ApiError(400, "companyName is required ");
@@ -19,82 +21,80 @@ const registerCompany = asyncHandler(async (req, res) => {
 
   const company = await Company.create({
     companyName,
-    descripition,
+    description,
     website,
     location,
     userId: req.id,
   });
 
-  if(!company) {
-     throw new ApiError(400 , "something went wrong while register company")
+  if (!company) {
+    throw new ApiError(400, "something went wrong while register company");
   }
 
   return res
-  .status(200)
-  .json (new ApiResponse(200 , company , "successfully registed company"))
+    .status(200)
+    .json(new ApiResponse(200, company, "successfully registed company"));
 });
 
-const getCompany = asyncHandler(async (req,res) => {
-    const userId = req.id
+const getCompany = asyncHandler(async (req, res) => {
+  const userId = req.id;
 
-    if(!userId) {
-        throw new ApiError(400 , "userId not find")
-    }
+  if (!userId) {
+    throw new ApiError(400, "userId not find");
+  }
 
-    const company = await Company.find({userId})
+  const company = await Company.find({ userId });
 
-    if(!company) {
-        throw new ApiError(400 , "company not find")
-    }
+  if (!company) {
+    throw new ApiError(400, "company not find");
+  }
 
-    return res
+  return res
     .status(200)
-    .json(new ApiResponse(200 , company , "company find successfully"))
-})
+    .json(new ApiResponse(200, company, "company find successfully"));
+});
 
-const getCompanyById = asyncHandler(async (req,res) => {
-    const companyId = req.params.id
+const getCompanyById = asyncHandler(async (req, res) => {
+  const companyId = req.params.id;
 
-    if(!isValidObjectId(companyId)) {
-        throw new ApiError(400 , "companyid is required")
-    }
+  if (!isValidObjectId(companyId)) {
+    throw new ApiError(400, "companyid is required");
+  }
 
-    const company = await Company.findById(companyId)
+  const company = await Company.findById(companyId);
 
-    if(!company) {
-        throw new ApiError(400 , "company is not found ")
-    }
+  if (!company) {
+    throw new ApiError(400, "company is not found ");
+  }
 
-    return res.
-    status(200)
-    .json (new ApiResponse(200 , company , "company find successfully"))
-})
+  return res
+    .status(200)
+    .json(new ApiResponse(200, company, "company find successfully"));
+});
 
 const updateCompany = asyncHandler(async (req, res) => {
-    const {name , descripition , location , website} = req.body
+  const { companyName, description, location, website } = req.body;
 
-    const updatedata = {name , descripition , website , location}
+  const file = req.file;
+  const fileUri = getDataUri(file);
+  const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+  const logo = cloudResponse.secure_url;
 
-    const company =  await Company.findByIdAndUpdate(
-        req.params.id,
-        updatedata,
-        {
-            new:true
-        }
-    )
+  const updatedata = { companyName, description, website, location, logo };
 
-    if(!company) {
-        throw new ApiError(400 , "company is ot found ")
-    }
+  const company = await Company.findByIdAndUpdate(req.params.id, updatedata, {
+    new: true,
+  });
 
-    return res
+  if (!company) {
+    throw new ApiError(400, "company is ot found ");
+  }
+
+  return res
     .status(200)
-    .json(new ApiResponse(200 , company , "company details updated successfullly"))
-}) 
- 
-export {
-    registerCompany,
-    getCompany,
-    getCompanyById,
-    updateCompany
-}
+    .json(
+      new ApiResponse(200, company, "company details updated successfullly")
+    );
+});
+
+export { registerCompany, getCompany, getCompanyById, updateCompany };

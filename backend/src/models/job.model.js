@@ -5,11 +5,11 @@ const jobSchema = new Schema({
         type: String,
         required: true
     },
-    descripition: {
+    description: {
         type: String,
         required: true
     },
-    requirement: [
+    requirements: [
         {
             type: String
         }
@@ -34,7 +34,7 @@ const jobSchema = new Schema({
         type: Number,
         required: true
     },
-    company: {
+    companyId: {
         type: Schema.Types.ObjectId,
         ref: "Company",
         required: true,

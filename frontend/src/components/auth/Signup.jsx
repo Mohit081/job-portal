@@ -25,7 +25,7 @@ const Signup = () => {
   });
 
   const navigate = useNavigate();
-  const loading = useSelector((store) => store.auth);
+const {loading} = useSelector((store) => store.auth);
   const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
@@ -38,7 +38,6 @@ const Signup = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(input);
     const formData = new FormData();
     formData.append("fullName", input.fullName);
     formData.append("email", input.email);
@@ -50,7 +49,6 @@ const Signup = () => {
     }
 
     try {
-      console.log(loading)
       dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
         headers: {
@@ -68,7 +66,6 @@ const Signup = () => {
       toast.error(error.response.data.message);
     } finally {
       dispatch(setLoading(false));
-      console.log(loading)
     }
   };
 
@@ -122,7 +119,7 @@ const Signup = () => {
                 onChange={changeEventHandler}
               />
             </div>
-            <div className="flex items-center justify-between">
+            <div className=" md:flex items-center justify-between">
               <RadioGroup className="flex items-center gap-4 my-5">
                 <div className="flex items-center space-x-2">
                   <Input

@@ -6,13 +6,14 @@ import {
   registerCompany,
   updateCompany,
 } from "../controllers/company.controller.js";
+import { upload } from "../middleware/multer.middleware.js";
 
 const router = Router();
 
 router.route("/").post(verifyJWT, registerCompany);
 router.route("/getcompany").get(verifyJWT, getCompany);
-router.route("/getcompany/:id").get(getCompanyById);
-router.route("/update/:id").post(verifyJWT, updateCompany);
+router.route("/getcompany/:id").get(verifyJWT,getCompanyById);
+router.route("/update/:id").put(verifyJWT,upload, updateCompany);
 
 export default router;  
 

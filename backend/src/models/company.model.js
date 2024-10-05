@@ -5,7 +5,7 @@ const companySchema = new Schema({
         type: String,
         required: true
     },
-    descripition: {
+    description: {
         type: String
     },
     website: {
@@ -24,4 +24,4 @@ const companySchema = new Schema({
     }
 },{timestamps: true})
 
-export const Company = mongoose.model("Company",companySchema)
+export const Company = mongoose.model("Company",companySchema)  

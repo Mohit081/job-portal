@@ -9,7 +9,7 @@ import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.route("/:id").post(verifyJWT, applyJob);
+router.route("/apply/:id").get(verifyJWT, applyJob);
 router.route("/appliedjobs").get(verifyJWT, getAppliedjobs);
 router.route("/getapplicants/:id").get(verifyJWT, getApplicants);
 router.route("/update/status/:id").post(verifyJWT, updateStatus);

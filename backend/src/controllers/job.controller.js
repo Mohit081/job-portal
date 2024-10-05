@@ -3,13 +3,13 @@ import { ApiError } from "../utlis/ApiError.js";
 import { ApiResponse } from "../utlis/ApiResponse.js";
 import { Job } from "../models/job.model.js";
 import { query } from "express";
-import { isValidObjectId } from "mongoose";
+import { isValidObjectId } from "mongoose"; 
 
 const postJob = asyncHandler(async (req, res) => {
   const {
     title,
-    descripition,
-    requirement,
+    description,
+    requirements,
     salary,
     location,
     jobType,
@@ -20,8 +20,8 @@ const postJob = asyncHandler(async (req, res) => {
 
   if (
     !title ||
-    !descripition ||
-    !requirement ||
+    !description ||
+    !requirements ||
     !salary ||
     !location ||
     !jobType ||
@@ -40,14 +40,14 @@ const postJob = asyncHandler(async (req, res) => {
 
   const job = await Job.create({
     title,
-    descripition,
-    requirement: requirement.split(","),
+    description,
+    requirements: requirements.split(","), 
     salary: Number(salary),
     location,
     jobType,
     experience,
     position,
-    company: companyId,
+    companyId: companyId,
     created_By: userId,
   });
 
@@ -66,13 +66,13 @@ const getAllJobs = asyncHandler(async (req, res) => {
   const query = {
     $or: [
       { title: { $regex: keyword, $options: "i" } },
-      { descripition: { $regex: keyword, $options: "i" } },
+      { description: { $regex: keyword, $options: "i" } },
     ],
   };
 
   const jobs = await Job.find(query)
     .populate({
-      path: "company",
+      path: "companyId",
     })
     .sort({ createdAt: -1 });
 
@@ -83,7 +83,7 @@ const getAllJobs = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, jobs, "jobs find successfully"));
-}); 
+});
 
 const getJobById = asyncHandler(async (req, res) => {
   const jobId = req.params.id;
@@ -92,7 +92,9 @@ const getJobById = asyncHandler(async (req, res) => {
     throw new ApiError(400, "jobId is required");
   }
 
-  const job = await Job.findById(jobId);
+  const job = await Job.findById(jobId).populate({
+    path: "application"
+  });
 
   if (!job) {
     throw new ApiError(400, "job not found");
@@ -111,12 +113,11 @@ const getAdminJob = asyncHandler(async (req, res) => {
   }
 
   const jobs = await Job.find({ created_By: adminId }).populate({
-    path: "company",
-    createdAt: -1,
+    path: "companyId",
   });
 
   if (!jobs) {
-    throw new ApiError(400, "jobs not found");
+    throw new ApiError(400, "jobs not found"); 
   }
 
   return res

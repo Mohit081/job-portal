@@ -1,22 +1,35 @@
-import React from 'react'
-import { useSelector } from 'react-redux'; 
-import LatestJobsCards from './LatestJobsCards';
-
-const randomJobs = [1, 2, 3, 4, 5, 6, 7, 8];
+import React from "react";
+import { useSelector } from "react-redux";
+import LatestJobCards from "./LatestJobsCards";
+import { motion } from "framer-motion";
 
 const LatestJobs = () => {
-    // const {allJobs} = useSelector(store=>store.job);
-   
-    return (
-        <div className='max-w-7xl mx-auto my-20'>
-            <h1 className='text-4xl font-bold'><span className='text-[#6A38C2]'>Latest & Top </span> Job Openings</h1>
-            <div className='grid grid-cols-3 gap-4 my-5'>
-                {
-                    randomJobs.length <= 0 ? <span>No Job Available</span> : randomJobs?.slice(0,6).map((job) => <LatestJobsCards key={job._id} job={job}/>)
-                }
-            </div>
-        </div>
-    )
-}
+  const { allJobs } = useSelector((store) => store.job);
 
-export default LatestJobs
+  return (
+    <div className="max-w-7xl md:mx-auto my-20">
+      <h1 className="text-4xl font-bold md:px-0 px-5">
+        <span className="text-[#6A38C2]">Latest & Top </span> Job Openings
+      </h1>
+      <div className="grid md:grid-cols-3 gap-4 my-5 md:px-0 px-5">
+        {allJobs <= 0 ? (
+          <span>No Job Available</span>
+        ) : (
+          allJobs?.slice(0, 6).map((job) => (
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.2 }}
+              key={job?._id}
+            >
+              <LatestJobCards key={job._id} job={job} />
+            </motion.div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default LatestJobs;

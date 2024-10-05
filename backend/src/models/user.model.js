@@ -33,7 +33,7 @@ const userSchema = new Schema(
       bio: {type: String },
       skills: [{ type: String }],
       resume: { type: String },
-      resumeOringinalName: { type: String },
+      resumeOriginalName: { type: String },
       company: { type: Schema.Types.ObjectId, ref: "company" },
       profilePhoto: {
         type: String,

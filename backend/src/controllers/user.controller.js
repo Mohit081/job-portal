@@ -2,15 +2,16 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utlis/ApiError.js";
 import { ApiResponse } from "../utlis/ApiResponse.js";
 import { asyncHandler } from "../utlis/asyncHandler.js";
+import cloudinary from "../utlis/cloudinary.js";
+import getDataUri from "../utlis/datauri.js";
 
 const generateAccessAndrefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
-    if(!user){
-      throw new ApiError(400 , "user not find")
+    if (!user) {
+      throw new ApiError(400, "user not find");
     }
-    console.log(user)
-    const accessToken = user.generateAccesstoken()
+    const accessToken = user.generateAccesstoken();
     const refreshToken = user.generateRefreshtoken();
 
     user.refreshToken = refreshToken;
@@ -32,7 +33,9 @@ const userRegister = asyncHandler(async (req, res) => {
     throw new ApiError(400, "fill all necessary details");
   }
 
-  const file = req.file
+  const file = req.file;
+  const fileUri = getDataUri(file);
+  const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
   const existedUser = await User.findOne({ email });
 
@@ -45,7 +48,10 @@ const userRegister = asyncHandler(async (req, res) => {
     email,
     phoneNumber,
     password,
-    role
+    role,
+    profile: {
+      profilePhoto: cloudResponse.secure_url,
+    },
   });
 
   if (!user) {
@@ -85,8 +91,8 @@ const userLogin = asyncHandler(async (req, res) => {
   );
 
   const loggedInUser = await User.findById(user._id).select(
-    "-password -refreshToken"
-  );    
+    "-password -refreshToken" 
+  );
 
   const options = {
     httpOnly: true,
@@ -102,8 +108,6 @@ const userLogin = asyncHandler(async (req, res) => {
         200,
         {
           user: loggedInUser,
-          accessToken,
-          refreshToken,
         },
         "user logged in succcessfully"
       )
@@ -137,44 +141,47 @@ const userLogout = asyncHandler(async (req, res) => {
 
 const profileupdate = asyncHandler(async (req, res) => {
   const { fullName, email, phoneNumber, bio, skills } = req.body;
-  
-  const userId = req.id
-  console.log(req.id)
 
-  if(!userId){
-    throw new ApiError(400 , "userId not find")
+  const file = req.file;
+  const fileUri = getDataUri(file);
+  const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+  const userId = req.id;
+
+  if (!userId) {
+    throw new ApiError(400, "userId not find");
   }
 
-  const user = await User.findById(userId)
+  const user = await User.findById(userId);
 
-  if(!user){
-    throw new ApiError(400 , "user not find")
+  if (!user) {
+    throw new ApiError(400, "user not find");
   }
 
-  if(fullName) user.fullName = fullName
-  if(email) user.email = email
-  if(phoneNumber) user.phoneNumber = phoneNumber
-  if(bio) user.profile.bio = bio
+  if (fullName) user.fullName = fullName;
+  if (email) user.email = email;
+  if (phoneNumber) user.phoneNumber = phoneNumber;
+  if (bio) user.profile.bio = bio;
 
-  let skillArray
-  if(skills) {
-    skillArray = skills.split(',')
-    user.profile.skills = skillArray
+  let skillArray;
+  if (skills) {
+    skillArray = skills.split(",");
+    user.profile.skills = skillArray;
   }
 
-  await user.save()
+  if (cloudResponse) {
+    user.profile.resume = cloudResponse.secure_url;
+    user.profile.resumeOriginalName = file.originalname;
+  }
+  await user.save();
 
-  const updatedUser = await User.findById(userId).select("-password -refreshToken")
+  const updatedUser = await User.findById(userId).select(
+    "-password -refreshToken"
+  );
 
   return res
-  .status(200)
-  .json(new ApiResponse(200 , updatedUser , "update profile successfully"))
-}); 
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "update profile successfully"));
+});
 
-
-export {
-  userRegister,
-  userLogin,
-  userLogout,
-  profileupdate
-}
+export { userRegister, userLogin, userLogout, profileupdate };

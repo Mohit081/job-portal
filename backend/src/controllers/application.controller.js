@@ -6,7 +6,7 @@ import { ApiResponse } from "../utlis/ApiResponse.js";
 import { asyncHandler } from "../utlis/asyncHandler.js";
 
 const applyJob = asyncHandler(async (req, res) => {
-  const userId = req.id;
+  const userId = req.id; 
 
   const jobId = req.params.id;
 
@@ -18,6 +18,7 @@ const applyJob = asyncHandler(async (req, res) => {
     job: jobId,
     applicant: userId,
   });
+  console.log(existedApplication)
 
   if (existedApplication) {
     throw new ApiError(400, "you have already applied for this job");
@@ -38,32 +39,31 @@ const applyJob = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, newApplication, "job applied successfully"));
-});
+    .json(new ApiResponse(200, newApplication, "job applied successfully")); 
+}); 
 
 const getAppliedjobs = asyncHandler(async (req, res) => {
   const userId = req.id;
 
-  console.log(userId)
 
-  // const application = await Application.find({applicant: userId})
-  //   .sort({ createdAt: -1 })
-  //   .populate({
-  //     path: "job",
-  //     options: { sort: { createdAt: -1 } },
-  //     populate: {
-  //       path: "company",
-  //       options: { sort: { createdAt: -1 } },
-  //     },
-  //   });
+  const application = await Application.find({applicant: userId})
+    .sort({ createdAt: -1 })
+    .populate({
+      path: "job",
+      options: { sort: { createdAt: -1 } },
+      populate: {
+        path: "companyId",
+        options: { sort: { createdAt: -1 } },
+      },
+    });
 
-  // if (!application) {
-  //   throw new ApiError(400, "application not found");
-  // }
+  if (!application) {
+    throw new ApiError(400, "application not found");
+  }
 
-  // return res
-  //   .status(200)
-  //   .json(new ApiResponse(200, application, "application found successfully"));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, application, "application found successfully"));
 });
 
 const getApplicants = asyncHandler(async (req, res) => {
