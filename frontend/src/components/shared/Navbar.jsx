@@ -14,6 +14,7 @@ import { AlignJustifyIcon, BoxIcon, Layers3, LogIn, LogOut, User2 } from "lucide
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
 
+
   const [value, setvalue] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();

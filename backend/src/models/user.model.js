@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
   {
@@ -27,19 +27,19 @@ const userSchema = new Schema(
       required: true,
     },
     refreshToken: {
-      type: String
+      type: String,
     },
     profile: {
-      bio: {type: String },
+      bio: { type: String },
       skills: [{ type: String }],
       resume: { type: String },
       resumeOriginalName: { type: String },
       company: { type: Schema.Types.ObjectId, ref: "company" },
       profilePhoto: {
         type: String,
-        default: "",
+        required: true,
       },
-    }
+    },
   },
   { timestamps: true }
 );
@@ -56,8 +56,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 };
 
 userSchema.methods.generateAccesstoken = function () {
-
- return jwt.sign(    
+  return jwt.sign(
     {
       _id: this._id,
       email: this.email,
