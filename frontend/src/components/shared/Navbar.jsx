@@ -9,11 +9,17 @@ import { USER_API_END_POINT } from "@/utlis/constants";
 import { setUser } from "../redux/authSlice";
 import { toast } from "sonner";
 import axios from "axios";
-import { AlignJustifyIcon, BoxIcon, Layers3, LogIn, LogOut, User2 } from "lucide-react";
+import {
+  AlignJustifyIcon,
+  BoxIcon,
+  Layers3,
+  LogIn,
+  LogOut,
+  User2,
+} from "lucide-react";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
-
 
   const [value, setvalue] = useState(null);
   const dispatch = useDispatch();
@@ -82,8 +88,15 @@ const Navbar = () => {
             >
               <AlignJustifyIcon />
             </Button>
-          ) : (
+          ) : user.role == "applicant" ? (
             <a href="/jobs" className="flex md:hidden text-lg gap-2 pl-10">
+              <Layers3 />
+            </a>
+          ) : (
+            <a
+              href="/admin/jobs"
+              className="flex md:hidden text-lg gap-2 pl-10"
+            >
               <Layers3 />
             </a>
           )}
@@ -162,7 +175,7 @@ const Navbar = () => {
       </div>
       <div className="flex justify-center bg-slate-100 text-[#6A38C2] t">
         {value == 1 && (
-          <ul className="  md:hidden font-medium items-center gap-5 py-5">
+          <ul className="   font-medium items-center gap-5 py-5">
             {user && user.role === "recruiter" ? (
               <>
                 <li>
