@@ -15,7 +15,9 @@ import {
   Layers3,
   LogIn,
   LogOut,
+  User,
   User2,
+  User2Icon,
 } from "lucide-react";
 
 const Navbar = () => {
@@ -125,7 +127,7 @@ const Navbar = () => {
                     src={
                       user.profile.profilePhoto
                         ? user?.profile?.profilePhoto
-                        : "../../public/avatar.avif"
+                        : <User2Icon />
                     }
                     alt="@shadcn"
                   />

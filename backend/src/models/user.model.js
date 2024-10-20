@@ -37,7 +37,6 @@ const userSchema = new Schema(
       company: { type: Schema.Types.ObjectId, ref: "company" },
       profilePhoto: {
         type: String,
-        required: true,
       },
     },
   },
