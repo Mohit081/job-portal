@@ -20,7 +20,7 @@ const generateAccessAndrefreshTokens = async (userId) => {
     return { accessToken, refreshToken };
   } catch (error) {
     throw new ApiError(
-      500,
+      700,
       "something went wrong while generating refreshToken"
     );
   }
