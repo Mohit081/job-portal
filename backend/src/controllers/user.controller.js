@@ -32,6 +32,7 @@ const userRegister = asyncHandler(async (req, res) => {
   if (!fullName || !email || !phoneNumber || !password || !role) {
     throw new ApiError(400, "fill all necessary details");
   }
+  console.log(fullName,email,phoneNumber,role)
 
   const file = req.file;
   const fileUri = getDataUri(file);
@@ -40,6 +41,7 @@ const userRegister = asyncHandler(async (req, res) => {
   const existedUser = await User.findOne({ email });
 
   if (existedUser) {
+    console.log("hai")
     throw new ApiError(400, "email is already registed");
   }
 
