@@ -37,7 +37,7 @@ const userRegister = asyncHandler(async (req, res) => {
   const file = req.file;
   const fileUri = getDataUri(file);
   const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-  console.log(cloudResponse.secure_url)
+  console.log("cloudinary mai dikkar hai ",cloudResponse.secure_url)
 
   const existedUser = await User.findOne({ email });
 
