@@ -34,11 +34,14 @@ const userRegister = asyncHandler(async (req, res) => {
   }
   console.log(fullName,email,phoneNumber,role,password)
 
-  const file = req.file;
+  try{
+const file = req.file;
   const fileUri = getDataUri(file);
   const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
   console.log("cloudinary mai dikkar hai ",cloudResponse.secure_url)
-
+  }catch(error){
+console.log("cloudinary rr",error)}
+  
   const existedUser = await User.findOne({ email });
 
   if (existedUser) {
