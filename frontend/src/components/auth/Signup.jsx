@@ -63,7 +63,7 @@ const {loading} = useSelector((store) => store.auth);
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.data.message);
+      toast.error(error);
     } finally {
       dispatch(setLoading(false));
     }
