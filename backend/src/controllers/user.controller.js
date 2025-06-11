@@ -32,11 +32,12 @@ const userRegister = asyncHandler(async (req, res) => {
   if (!fullName || !email || !phoneNumber || !password || !role) {
     throw new ApiError(400, "fill all necessary details");
   }
-  console.log(fullName,email,phoneNumber,role)
+  console.log(fullName,email,phoneNumber,role,password)
 
   const file = req.file;
   const fileUri = getDataUri(file);
   const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+  console.log(cloudResponse.secure_url)
 
   const existedUser = await User.findOne({ email });
 
