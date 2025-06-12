@@ -63,7 +63,7 @@ const {loading} = useSelector((store) => store.auth);
       }
     } catch (error) {
       console.log("error in signup" , error , error.response );
-      toast.error(error.response);
+      toast.error(error.response.data);
     } finally {
       dispatch(setLoading(false));
     }
