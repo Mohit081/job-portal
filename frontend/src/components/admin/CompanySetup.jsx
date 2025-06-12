@@ -57,7 +57,7 @@ const CompanySetup = () => {
         }
       );
       if (res.data.success) {
-        toast.success(res.data.message);
+        toast.success(res.data.data.message);
         navigate("/admin/companies");
       }
     } catch (error) {
