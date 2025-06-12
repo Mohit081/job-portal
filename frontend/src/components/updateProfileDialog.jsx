@@ -64,7 +64,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
       );
       if (res.data.success) {
         dispatch(setUser(res.data.data));
-        toast.success(res.data.message);
+        toast.success(res.data.data.message);
       }
     } catch (error) {
       console.log(error);
